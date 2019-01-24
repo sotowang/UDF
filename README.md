@@ -42,7 +42,9 @@ udfDF.show();
 
 # UDAF 用户自定义聚合函数
 
-针对多行输入,进行聚合计算,支架一个输出
+[Java Code Examples for org.apache.spark.sql.expressions.MutableAggregationBuffer](https://www.programcreek.com/java-api-examples/index.php?api=org.apache.spark.sql.expressions.MutableAggregationBuffer)
+
+针对多行输入,进行聚合计算,一个输出
 
 ## 案例:统计字符串出现的次数 StringCountUDAF.java
 
