@@ -1,54 +1,15 @@
-# UDF用户自定义函数
+package com.soto;
 
-针对单行输入,返回一个输出
+import org.apache.spark.sql.Row;
+import org.apache.spark.sql.expressions.MutableAggregationBuffer;
+import org.apache.spark.sql.expressions.UserDefinedAggregateFunction;
+import org.apache.spark.sql.types.*;
 
-## 案例: 截取字符串长度(UDF)  strLenUDF.java
+import java.util.ArrayList;
 
-* 定义和注册 自定义函数
-
-```java
-//注册一张names表
-namesDF.registerTempTable("names");
-
-//定义函数:自己写匿名函数
-//注册函数:SqlContext.udf.register()
-sqlContext.udf().register("strLen",(String s) -> s.length(),DataTypes.IntegerType);
-
-
-//使用自定义函数
-DataFrame udfDF = sqlContext.sql("select name,strLen(name) from names");
-
-udfDF.show();
-```
-
-
-
-* 案例中出现不支持lambda表达式的情况,解决方法在pom.xml文件中修改
-
-[Java “lambda expressions not supported at this language level”](https://stackoverflow.com/questions/22703412/java-lambda-expressions-not-supported-at-this-language-level)
-
-```java
-<plugin>
-  <artifactId>maven-compiler-plugin</artifactId>
-  <version>3.8.0</version>
-  <configuration>
-    <source>1.8</source>
-    <target>1.8</target>
-  </configuration>
-</plugin>
-```
-
----
-
-# UDAF 用户自定义聚合函数
-
-针对多行输入,进行聚合计算,支架一个输出
-
-## 案例:统计字符串出现的次数 StringCountUDAF.java
-
-UDAF方法重写 StringCount.java
-
-```java
+/**
+ * 统计字符串出现的次数
+ */
 public class StringCount extends UserDefinedAggregateFunction {
     ArrayList<StructField> structFields = new ArrayList<>();
     //指输入数据的类型
@@ -105,44 +66,3 @@ public class StringCount extends UserDefinedAggregateFunction {
     }
 
 }
-```
-
-UDAF 使用StringCountUDAF.java
-
-```java
-//注册一张names表
-namesDF.registerTempTable("names");
-
-//定义和注册 自定义函数
-//定义函数:自己写匿名函数
-//注册函数:SqlContext.udf.register()
-sqlContext.udf().register("strCount",new StringCount());
-
-
-//使用自定义函数
-DataFrame udfDF = sqlContext.sql("select name,strCount(name) from names group by name ");
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
